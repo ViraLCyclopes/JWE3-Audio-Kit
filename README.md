@@ -9,7 +9,9 @@ The merge needs **Python 3.11+**, four packages
 checkout** — the folder containing `ovl_tool_cmd.py`.
 
 cobra-tools is **GPLv3**, so this kit deliberately does **not** redistribute it.
-You supply your own copy and point the kit at it once:
+Get it from [github.com/OpenNaja/cobra-tools](https://github.com/OpenNaja/cobra-tools)
+(Code → Download ZIP), unzip it anywhere, and note the folder that directly
+contains `ovl_tool_cmd.py`. Then point the kit at it once:
 
 ```bat
 python audio_kit_gui.py
@@ -22,6 +24,8 @@ by every command-line tool here. On the command line, `--cobra PATH` beats
 
 `audio_tools.json` holds your machine's paths — it is gitignored and should never
 ship with a mod.
+
+Full walkthrough, including Python and the packages: [END_USER_INSTALL.md](END_USER_INSTALL.md#one-time-setup).
 
 Give a donor-based species its **own** sounds without touching a single stock
 file and without colliding with other mods.

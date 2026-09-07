@@ -1,30 +1,41 @@
 # Installing a mod with custom audio — end user instructions
 
-For loader v6.1, install with the game closed. The merge requires **Python 3.11
-or newer**, four Python packages (one `pip` command, below), and **your own
-cobra-tools checkout** — it is not bundled, because cobra-tools is GPLv3 and this
-kit does not redistribute it. Point the kit at yours once with
-`python audio_kit_gui.py`. See [current setup and fixes](FIXES_20260906.md).
-Keep the generated `audio_manifest.sha256` alongside `audiometadata.ovl` in
-`VLAudioLoader/Audio/`. Re-run the merge after a stock metadata update too.
+Install with the game closed. Custom dinosaur audio needs three things: the
+shared loader, the species mod, and a successful **registry merge**.
+
+> ### 🡒 First time on this machine?
+> Do **[One-time setup](#one-time-setup)** first — Python 3.11+, four packages,
+> and a cobra-tools folder. It takes a few minutes and you never repeat it.
+> cobra-tools is **not bundled** (it is GPLv3), so you supply your own copy and
+> point the kit at it once with `python audio_kit_gui.py`.
 
 Template you can copy into any mod release that ships its own sounds. Replace
-`<ModName>` with your mod's folder name.
-
-Custom dinosaur audio needs the shared loader, the species mod, and a successful
-registry merge. v6.1 logs missing or mismatched manifests and disables custom
-bank loading until the merge is regenerated. Vanilla audio can still work.
+`<ModName>` with your mod's folder name. See also
+[current setup and fixes](FIXES_20260906.md).
 
 ## Everyday workflow
 
 1. Close JWE3.
 2. Install, update, or remove the audio mod under `Win64/ovldata/`.
-3. Run **`merge_registry.bat` beside `JWE3.exe`** and require success.
+3. **Run the merge** and require success — either
+   `merge_registry.bat` beside `JWE3.exe`, or `python audio_kit_gui.py` →
+   **Merge registry**.
 4. Launch and test the animal's sounds in a park.
 
-Repeat after changing any bank/fragment contents or after a game update changes
-stock audio metadata. No merge is needed before an unchanged launch. The
-manifest is generated automatically; never edit it by hand.
+Repeat after changing **any** bank or fragment contents, and after a game update
+changes stock audio metadata. No merge is needed before an unchanged launch.
+
+Two things worth knowing up front, because both look like a broken mod:
+
+* **The merge is not optional and not one-time.** It rebuilds from stock plus
+  every fragment currently installed, so it must be re-run when a mod is
+  **removed** as well as added.
+* **Replacing a `.bnk` invalidates the manifest.** The loader then disables
+  *every* mod's custom audio — not just that species — and falls back to stock.
+  The symptom is total silence. Re-run the merge and it comes back.
+
+The manifest is generated automatically; never edit it by hand, and keep
+`audio_manifest.sha256` alongside `audiometadata.ovl` in `VLAudioLoader/Audio/`.
 
 ---
 
@@ -77,8 +88,15 @@ All three must be present. The `.add` file is not optional — see below.
 
 ### 4. Run the registry merge
 
+**Never done this before?** Complete [One-time setup](#one-time-setup) first —
+this step needs Python and a cobra-tools folder, and will stop with a message
+naming whichever is missing.
+
 **Double-click `merge_registry.bat` in the game root with JWE3 closed.**
 The root launcher forwards to the scripts in `JWE3 Audio Kit/`.
+
+Or run `python audio_kit_gui.py` and press **Merge registry** — same thing, with
+the output in a window and **Check (read-only)** available first.
 
 The game keeps one global registry, `wwisemetadatasoundbanks`, that decides
 whether a sound event is ever *posted*. An event that is not in it is never
@@ -101,49 +119,88 @@ to your installed combination of mods, not to an individual species release.
 Then restart the game. A failed merge needs the reported problem corrected;
 rerunning alone will not resolve conflicting mod IDs.
 
-### One-time setup
+## One-time setup
 
-**1. Install Python 3.11 or newer** and tick *Add python.exe to PATH*. 3.10 will
-not work — the constants loader rejects it.
+Do this once per machine, before the first merge. Three things: Python, four
+packages, and a cobra-tools folder.
 
-**2. Install the four packages** the merge needs. Open Command Prompt in the
-`JWE3 Audio Kit` folder and run:
+### 1. Python 3.11 or newer
+
+Install from [python.org](https://www.python.org/downloads/) and tick
+**Add python.exe to PATH** in the installer. 3.10 will not work — the constants
+loader rejects it. Check it took:
+
+```bat
+python --version
+```
+
+If that says *'python' is not recognized*, PATH was not ticked — re-run the
+installer and choose **Modify**.
+
+### 2. The four packages
+
+Open Command Prompt in the `JWE3 Audio Kit` folder and run:
 
 ```bat
 python -m pip install -r requirements.txt
 ```
 
-That is numpy, imageio, bitarray and pillow. `merge_registry.bat` checks for both
-the Python version and these packages up front and tells you which is missing, so
-you will not get a raw traceback.
+That is numpy, imageio, bitarray and pillow. `merge_registry.bat` checks the
+Python version and these packages up front and names whatever is missing, so you
+get a plain message instead of a traceback.
 
-### Third step — tell the kit where cobra-tools is
+### 3. A cobra-tools folder
 
-cobra-tools is **GPLv3** and is deliberately **not** shipped with this kit, so you
-need your own copy: the folder containing `ovl_tool_cmd.py`, with the packages
-above installed. Get it from the cobra-tools project.
+cobra-tools is **GPLv3**, so this kit deliberately does **not** ship a copy — you
+supply your own. Download it from
+[github.com/OpenNaja/cobra-tools](https://github.com/OpenNaja/cobra-tools)
+(**Code → Download ZIP**, or clone it) and unzip it anywhere you like — it does
+not need to live near the game or the kit.
 
-The easy way — run it once and the setting is remembered:
+What you want is the folder that directly contains **`ovl_tool_cmd.py`**. If you
+unzipped it you will have something like
+`…\Downloads\cobra-tools-master\cobra-tools-master\` — the inner folder is
+usually the right one. The kit checks and tells you if you pick the wrong level.
+
+Then point the kit at it:
 
 ```bat
 python audio_kit_gui.py
 ```
 
-Set **Cobra tools**, press **Save settings**, then **Check (read-only)** to
-validate without writing anything, and **Merge registry** to apply. It writes
-`audio_tools.json` beside the scripts, which every command-line tool here reads.
+1. **Cobra tools** → *Browse…* → select that folder. The status line turns green
+   when it finds `ovl_tool_cmd.py`.
+2. **Game root** → leave blank; it auto-detects from your Steam libraries. Only
+   set it if you have several JWE3 installs.
+3. **Save settings** — writes `audio_tools.json` beside the scripts, which every
+   command-line tool here reads. You will not have to do this again.
+4. **Check (read-only)** — validates everything without writing a single game
+   file. A good first run.
+5. **Merge registry** — does it for real.
 
-Prefer the command line? Any of these work, in this order of precedence:
+The packages from step 2 need to be installed for the Python that runs
+cobra-tools; if you only have one Python, that is already the case.
+
+<details>
+<summary>Command line instead of the GUI</summary>
+
+Three ways to supply the path, in order of precedence — `--cobra PATH`, then the
+`JWE3_COBRA_TOOLS` environment variable, then `audio_tools.json` beside the
+scripts:
 
 ```json
 {"cobra_tools": "D:/path/to/cobra-tools-master"}
 ```
 
-`--cobra PATH` beats `JWE3_COBRA_TOOLS` beats `audio_tools.json`. The game root is
-found from the scripts' location or your Steam libraries; override with `--game`
-or `JWE3_GAME`.
+The game root is found from the scripts' location or your Steam libraries;
+override with `--game` or `JWE3_GAME`.
 
-`audio_tools.json` holds *your* paths — never ship it with a mod.
+</details>
+
+**Never ship `audio_tools.json` with a mod** — it holds your machine's paths. It
+is gitignored for the same reason.
+
+### Setup done — from here on
 
 From Command Prompt in the game root:
 
@@ -197,13 +254,30 @@ custom audio, not just that species. Re-run the merge and the line becomes
 The mod is installed but its events are not being fired. Check that
 `<ModName>/Audio/` really contains all three files.
 
-**"Cobra tools not found" / "Configured Cobra directory is invalid".**
-The kit has no cobra-tools path, or the one it has does not contain
-`ovl_tool_cmd.py`. Run `python audio_kit_gui.py`, set **Cobra tools** to your
-checkout and press Save settings. The message names the
-first offending paths. Re-copy the whole `JWE3 Audio Kit` folder from the same
-release. Then rerun the command
-that failed. If a merge failed, it still needs to complete before launching.
+**"Cobra tools not found".**
+The kit has not been told where cobra-tools is. See
+[One-time setup step 3](#3-a-cobra-tools-folder): download it from
+[github.com/OpenNaja/cobra-tools](https://github.com/OpenNaja/cobra-tools), then
+run `python audio_kit_gui.py`, set **Cobra tools**, and press **Save settings**.
+
+**"Configured Cobra directory is invalid".**
+The path is set but that folder has no `ovl_tool_cmd.py` — almost always one
+level off. A downloaded zip usually nests as
+`cobra-tools-master\cobra-tools-master\`, and it is the **inner** one you want.
+Open the folder and confirm you can see `ovl_tool_cmd.py` sitting in it. The GUI's
+status line turns green when the path is right, so fix it there and re-save.
+
+**"'python' is not recognized" or a Python version complaint.**
+Python is missing or older than 3.11, or it was installed without
+*Add python.exe to PATH*. Re-run the Python installer and choose **Modify** to
+tick that box. Verify with `python --version`.
+
+**A missing package (numpy, imageio, bitarray, pillow).**
+Run `python -m pip install -r requirements.txt` from the `JWE3 Audio Kit` folder.
+If you have several Python installs, use the same one cobra-tools runs under.
+
+After fixing any of these, **rerun the command that failed** — a merge that did
+not complete still needs to before you launch.
 
 **Another mod's audio broke after installing this.**
 Run `merge_registry.bat` to rebuild for all installed mods. If it reports an ID
