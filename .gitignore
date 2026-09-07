@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+out/
+_work/
+dll/*.dll
+dll/*.obj
+dll/*.lib
+dll/*.exp
+dll/release/*
+!dll/release/VLAudioLoader.dll
+!dll/release/xinput1_4.dll
+dll/auto4/
+dll/auto5/
+staging/
+audio_tools.json
+
+# cobra-tools is GPLv3 and is NOT redistributed - point the kit at your own
+# checkout via the GUI, --cobra, JWE3_COBRA_TOOLS, or audio_tools.json
+vendor/

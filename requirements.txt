@@ -1,0 +1,11 @@
+# Dependencies of cobra-tools, which you supply yourself (it is GPLv3 and
+# is not redistributed with this kit).
+# Install with:  python -m pip install -r requirements.txt
+#
+# Verified working versions are noted; the floors are what the merge needs.
+# matplotlib is NOT required - it is imported only by Cobra code the merge
+# never reaches.
+numpy>=1.24        # verified 1.26.4
+imageio>=2.20      # verified 2.26.1
+bitarray>=2.8      # verified 2.9.3
+pillow>=9.0        # verified 12.0.0

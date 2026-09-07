@@ -1,0 +1,4 @@
+EXPORTS
+    XInputGetState @2
+    XInputGetCapabilities @4
+    XInputGetKeystroke @8
