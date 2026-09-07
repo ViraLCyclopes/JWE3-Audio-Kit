@@ -21,10 +21,63 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 KIT = Path(__file__).resolve().parent
 CONFIG = KIT / "audio_tools.json"
+
+# Self-contained dark theme. Deliberately not imported from cobra-tools: this kit
+# no longer depends on that checkout being present, and a GUI that cannot start
+# without it would undo the point of removing the bundle.
+INK = "#e6e6e6"
+MUTED = "#9aa0a6"
+WARN = "#ffcc66"
+GOOD = "#7ec27e"
+BAD = "#ff7b72"
+BG = "#232629"
+PANEL = "#2b2f33"
+EDGE = "#3a4046"
+
+DARK_QSS = f"""
+QWidget {{ background: {BG}; color: {INK}; font-size: 13px; }}
+QLabel {{ background: transparent; }}
+QLineEdit, QPlainTextEdit {{
+    background: {PANEL}; color: {INK};
+    border: 1px solid {EDGE}; border-radius: 4px; padding: 5px;
+    selection-background-color: #4a6fa5;
+}}
+QLineEdit:focus {{ border: 1px solid #5a8ac0; }}
+QPushButton {{
+    background: {PANEL}; color: {INK};
+    border: 1px solid {EDGE}; border-radius: 4px; padding: 6px 14px;
+}}
+QPushButton:hover {{ background: #343a40; border-color: #55606a; }}
+QPushButton:pressed {{ background: #1d2023; }}
+QPushButton:disabled {{ color: {MUTED}; }}
+"""
+
+
+def apply_dark(app):
+    """Dark palette + stylesheet.
+
+    The palette matters as well as the stylesheet: file dialogs and tooltips are
+    native widgets that ignore the sheet, and would otherwise flash white.
+    """
+    app.setStyle("Fusion")
+    palette = QtGui.QPalette()
+    for role, colour in (
+            (QtGui.QPalette.Window, BG), (QtGui.QPalette.WindowText, INK),
+            (QtGui.QPalette.Base, PANEL), (QtGui.QPalette.AlternateBase, BG),
+            (QtGui.QPalette.Text, INK), (QtGui.QPalette.Button, PANEL),
+            (QtGui.QPalette.ButtonText, INK), (QtGui.QPalette.ToolTipBase, PANEL),
+            (QtGui.QPalette.ToolTipText, INK), (QtGui.QPalette.Highlight, "#4a6fa5"),
+            (QtGui.QPalette.HighlightedText, "#ffffff"),
+    ):
+        palette.setColor(role, QtGui.QColor(colour))
+    palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Text, QtGui.QColor(MUTED))
+    palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.ButtonText, QtGui.QColor(MUTED))
+    app.setPalette(palette)
+    app.setStyleSheet(DARK_QSS)
 
 
 def load_config() -> dict:
@@ -73,11 +126,13 @@ class MainWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("JWE3 Audio Kit")
-        self.resize(820, 560)
+        self.resize(860, 600)
         self.worker = None
         config = load_config()
 
         layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(14, 14, 14, 14)
+        layout.setSpacing(10)
         intro = QtWidgets.QLabel(
             "cobra-tools is <b>GPLv3 and not bundled</b> with this kit, so point this at your own "
             "checkout once - the folder containing <tt>ovl_tool_cmd.py</tt>. It is saved to "
@@ -118,12 +173,14 @@ class MainWindow(QtWidgets.QWidget):
             "from stock plus every fragment present, so a stale registry silently erases another "
             "mod's audio.")
         note.setWordWrap(True)
-        note.setStyleSheet("color: #ffe075; padding: 4px 0;")
+        note.setStyleSheet(f"color: {WARN}; padding: 2px 0;")
         layout.addWidget(note)
 
         self.log = QtWidgets.QPlainTextEdit()
         self.log.setReadOnly(True)
-        self.log.setStyleSheet("font-family: Consolas, monospace;")
+        self.log.setPlaceholderText("Output appears here.")
+        self.log.setMinimumHeight(180)
+        self.log.setStyleSheet("font-family: Consolas, monospace; font-size: 12px;")
         layout.addWidget(self.log, 1)
 
         self.validate()
@@ -160,14 +217,14 @@ class MainWindow(QtWidgets.QWidget):
         text = self.cobra_edit.text().strip()
         if not text:
             self.status.setText("No Cobra folder set — the kit will fall back to auto-detection.")
-            self.status.setStyleSheet("color: #ffe075;")
+            self.status.setStyleSheet(f"color: {WARN};")
             return False
         if not (Path(text) / "ovl_tool_cmd.py").is_file():
             self.status.setText("That folder has no ovl_tool_cmd.py — not a cobra-tools checkout.")
-            self.status.setStyleSheet("color: #ff8080;")
+            self.status.setStyleSheet(f"color: {BAD};")
             return False
         self.status.setText("Cobra tools look valid.")
-        self.status.setStyleSheet("color: #80c080;")
+        self.status.setStyleSheet(f"color: {GOOD};")
         return True
 
     def save(self):
@@ -227,6 +284,7 @@ class MainWindow(QtWidgets.QWidget):
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    apply_dark(app)
     window = MainWindow()
     window.show()
     return app.exec_()
