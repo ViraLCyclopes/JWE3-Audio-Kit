@@ -92,6 +92,22 @@ now rejects unmatched/empty files and conflicting replacements of shared media.
 If two events use the same media, supply the same replacement or replace only
 one of them. Rebuild, copy the full output trio, and merge after every change.
 
+> **Replacing the sounds on a species that already works? You still MUST re-run
+> the merge.** The `.wmetasb.add` is byte-identical when the prefix is unchanged,
+> which makes it tempting to just drop the two `.bnk` files in and restart. Do not.
+> Loader v6.1 keeps `audio_manifest.sha256`, which hashes the installed **bank
+> files** - replacing them invalidates it, and the loader then disables *every*
+> custom bank and falls back to the stock registry. The symptom is **total
+> silence**, not a wrong sound. `VLAudioLoader.log` says:
+>
+> ```
+> Audio content changed/missing: <Mod>/Audio/<prefix>_events.bnk
+> Audio manifest mismatch: install/remove/update detected. Run merge_registry.bat
+> Custom banks disabled until a valid registry merge is installed.
+> ```
+>
+> Re-run the merge, then confirm `Audio manifest verified` in that log.
+
 **This produces a NON-replacement mod.** It consumes the replacement mod's audio
 payload but re-IDs every id onto your prefix, so your species gets its own banks
 and vanilla Indominus keeps its stock voice.

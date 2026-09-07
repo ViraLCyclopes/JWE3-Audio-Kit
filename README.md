@@ -84,6 +84,11 @@ The local install has a `merge_registry.bat` beside `JWE3.exe`, forwarding to
 the installed `JWE3 Audio Kit` scripts. The generated manifest is local to that
 mod installation; species releases must not ship a pre-merged registry/manifest.
 
+**Any change to a `.bnk` requires a re-merge.** The manifest hashes the bank
+files, so replacing them - even a rebuild that leaves `.wmetasb.add`
+byte-identical - invalidates it, and the loader then disables every mod's
+custom audio and falls back to stock. The symptom is total silence.
+
 `--check` validates inputs without writing game files. `--output DIR` builds a
 staged registry/manifest pair; deploy both with the game closed. A successful
 check does not regenerate or prove freshness of the installed pair.

@@ -178,6 +178,21 @@ Check the latest launch in `VLAudioLoader.log`: look for `VLAudioLoader v6.1`,
 manifest disables custom banks and uses stock metadata. Rerun the merge, then
 test creature-driven sounds; successful bank loading alone is not playback proof.
 
+By far the most common cause is **a `.bnk` was replaced without re-running the
+merge**. The manifest hashes the bank files, so *any* change to them invalidates
+it — including a rebuild with the same prefix that leaves `.wmetasb.add`
+byte-identical. The log names the file:
+
+```
+Audio content changed/missing: <Mod>/Audio/<prefix>_events.bnk
+Audio manifest mismatch: install/remove/update detected. Run merge_registry.bat
+Custom banks disabled until a valid registry merge is installed.
+```
+
+Note the failure is **all-or-nothing**: one stale bank disables *every* mod's
+custom audio, not just that species. Re-run the merge and the line becomes
+`Audio manifest verified (N files, SHA-256)`.
+
 **It still sounds like the vanilla species.**
 The mod is installed but its events are not being fired. Check that
 `<ModName>/Audio/` really contains all three files.
