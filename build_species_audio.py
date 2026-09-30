@@ -55,10 +55,21 @@ def extract(ovl, out_dir):
     return out_dir
 
 
-def find_aux(d):
+def find_aux(d, hint=None):
     hits = [f for f in os.listdir(d) if f.endswith("_bnk_b.aux")]
-    if len(hits) != 1:
+    if not hits:
         raise RuntimeError("no '..._bnk_b.aux' in %s - that companion IS the bank" % d)
+    if len(hits) > 1 and hint:
+        # Some donor OVLs bundle multiple species banks (e.g. indominusrex +
+        # irritator).  Prefer the one whose name starts with the donor.
+        narrowed = [f for f in hits if f.startswith(hint)]
+        if len(narrowed) == 1:
+            hits = narrowed
+    if len(hits) != 1:
+        raise RuntimeError(
+            "expected exactly 1 '..._bnk_b.aux' in %s but found %d: %s\n"
+            "Pass --donor matching the correct species to disambiguate."
+            % (d, len(hits), ", ".join(sorted(hits))))
     return os.path.join(d, hits[0])
 
 
@@ -76,11 +87,27 @@ def audio_ovl(ov, name):
 
 
 def species_ovl(ov, donor):
-    for realm in ("Land", "Water", "Air", "Shared"):
-        p = os.path.join(ov, "Content0", "Dinosaurs", realm, donor, donor + ".ovl")
-        if os.path.exists(p):
-            return p
-    raise SystemExit("could not find the species OVL for %s" % donor)
+    # Some species ship a single OVL (IndominusRex/IndominusRex.ovl), others
+    # split by sex/age in nested subdirs:
+    #   Irritator/Female/Irritator_Female.ovl
+    #   Irritator/Male/Irritator_Male.ovl
+    # The motiongraph with audio event names typically lives in the Female variant.
+    variants = [
+        (donor, donor),                          # unified: Species/Species.ovl
+        ("Female", donor + "_Female"),            # split:   Species/Female/Species_Female.ovl
+        ("Male",   donor + "_Male"),              # split:   Species/Male/Species_Male.ovl
+    ]
+    for pack in PACKS:
+        for realm in ("Land", "Water", "Air", "Shared"):
+            for subdir, name in variants:
+                p = os.path.join(ov, pack, "Dinosaurs", realm, donor, subdir, name + ".ovl")
+                if os.path.exists(p):
+                    return p
+            # also check the flat layout Species/Species.ovl (no nested subdir)
+            p = os.path.join(ov, pack, "Dinosaurs", realm, donor, donor + ".ovl")
+            if os.path.exists(p):
+                return p
+    raise SystemExit("could not find the species OVL for %s in any content pack" % donor)
 
 
 def recover_names(motiongraph, donor):
@@ -401,7 +428,7 @@ def main():
         print("marker clip  : id 0x%08X, %d bytes (every sound becomes this)"
               % (mid, len(marker)))
 
-    media, media_map = build_media(find_aux(md_dir), a.prefix, marker)
+    media, media_map = build_media(find_aux(md_dir, a.donor.lower()), a.prefix, marker)
     media_sizes = {mid: size for mid, _, size in didx_entries(media)}
 
     mg_dir = extract(species_ovl(ov, a.donor), os.path.join(work, "species"))
@@ -412,7 +439,8 @@ def main():
     print("graph names  : %d recovered from %s" % (len(graph_names), mgs[0]))
 
     suffixes = [n.split(a.donor + "_", 1)[1] for n in graph_names]
-    events, owned, refs, patched = build_events(find_aux(ev_dir), a.donor, a.prefix,
+    donor_ev_hint = a.donor.lower() + "_events"
+    events, owned, refs, patched = build_events(find_aux(ev_dir, donor_ev_hint), a.donor, a.prefix,
                                                 expand(suffixes), media_map, media_sizes)
 
     if a.sounds:
@@ -420,7 +448,7 @@ def main():
                                                        a.prefix, a.sounds)
         media_sizes = {mid: size for mid, _, size in didx_entries(media)}
         # sizes changed, so rebuild the events bank against the NEW payload
-        events, owned, refs, patched = build_events(find_aux(ev_dir), a.donor, a.prefix,
+        events, owned, refs, patched = build_events(find_aux(ev_dir, donor_ev_hint), a.donor, a.prefix,
                                                     expand(suffixes), media_map, media_sizes)
         print("\ncustom sounds:")
         for suffix, n, sz in filled:

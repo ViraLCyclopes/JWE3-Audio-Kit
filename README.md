@@ -1,5 +1,10 @@
 # JWE3 Audio Kit
 
+**Complete illustrated workflow:** [Open the printable guide](CUSTOM_AUDIO_GUIDE.html),
+[read the Markdown source](CUSTOM_AUDIO_GUIDE.md), or
+[open the workflow diagram](CUSTOM_AUDIO_WORKFLOW.svg). Covers end-user setup,
+installation, custom WEMs, mod authoring, graph continuation, merging, and testing.
+
 **Loader v6.1:** see [installation and daily workflow](END_USER_INSTALL.md),
 [species authoring](USING_A_REPLACEMENT_SOUND_MOD.md), and
 [fixes and validation notes](FIXES_20260906.md). The original v6 DLL had a startup

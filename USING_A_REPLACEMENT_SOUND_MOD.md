@@ -62,6 +62,12 @@ GUI's status message only mentions banks.
 
 ### The command line way
 
+This is optional: the Audio Events tab supplies the donor, prefix, game and
+output arguments and uses the editor's Cobra checkout automatically. It also
+has **Custom WEM folder**, **Marker media OVL**, **Build baseline / discover WEM
+names**, and buttons to open the suffix list, report, and output folder. See
+[the complete GUI workflow](CUSTOM_AUDIO_GUIDE.md#7-mod-author-build-the-three-audio-files).
+
 Identical result, if you prefer it or want to script a batch of species:
 
 ```bat

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="1130" viewBox="0 0 1260 1130" role="img" aria-labelledby="title desc">
+<title id="title">JWE3 custom audio: author, installation, and runtime workflows</title>
+<desc id="desc">Three columns show how authors build banks and route events, users install and merge, and the runtime checks the manifest before loading custom audio.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#75848c" stroke-width="1.4"/></marker></defs>
+<rect width="1260" height="1130" rx="18" fill="#f3f6f8"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="36" y="48" font-size="27" font-weight="700" fill="#152b3c">JWE3 CUSTOM AUDIO</text>
+<text x="36" y="78" font-size="16" fill="#526372">Three workflows • Read each column top to bottom • Loader v6.1 / 7 Sep 2026</text>
+<rect x="30" y="103" width="380" height="44" rx="9" fill="#216e65"/><text x="48" y="131" fill="white" font-size="17" font-weight="700">MOD AUTHOR</text>
+<rect x="30" y="164" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="176" width="4" height="85" fill="#216e65"/>
+<text x="47" y="193" fill="#152b3c" font-size="17" font-weight="700">1  Choose donor + unique prefix</text>
+<text x="47" y="222" fill="#445968" font-size="15">Stock donor, replacement media OVL,</text>
+<text x="47" y="246" fill="#445968" font-size="15">or custom WEMs using listed suffixes.</text>
+<path d="M220,276 V294" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="297" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="309" width="4" height="85" fill="#216e65"/>
+<text x="47" y="326" fill="#152b3c" font-size="17" font-weight="700">2  Build species audio</text>
+<text x="47" y="355" fill="#445968" font-size="15">Re-ID donor events and media.</text>
+<text x="47" y="379" fill="#445968" font-size="15">Keep report.json for graph routing.</text>
+<path d="M220,409 V427" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="430" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="442" width="4" height="85" fill="#216e65"/>
+<text x="47" y="459" fill="#152b3c" font-size="17" font-weight="700">3  Keep the complete output trio</text>
+<text x="47" y="488" fill="#445968" font-size="15">&lt;prefix&gt;_events.bnk + _media.bnk</text>
+<text x="47" y="512" fill="#445968" font-size="15">&lt;prefix&gt;.wmetasb.add</text>
+<path d="M220,542 V560" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="563" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="575" width="4" height="85" fill="#216e65"/>
+<text x="47" y="592" fill="#152b3c" font-size="17" font-weight="700">4  Edit the staged motiongraph</text>
+<text x="47" y="621" fill="#445968" font-size="15">Rename owned events; retain shared ones.</text>
+<text x="47" y="645" fill="#445968" font-size="15">Prefab AudioCore.Name stays on donor.</text>
+<path d="M220,675 V693" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="696" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="708" width="4" height="85" fill="#216e65"/>
+<text x="47" y="725" fill="#152b3c" font-size="17" font-weight="700">5  Continue before another edit</text>
+<text x="47" y="754" fill="#445968" font-size="15">Continue from staged result → new step.</text>
+<text x="47" y="778" fill="#445968" font-size="15">Reload analysis; select and scan again.</text>
+<path d="M220,808 V826" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="829" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="30" y="841" width="4" height="85" fill="#216e65"/>
+<text x="47" y="858" fill="#152b3c" font-size="17" font-weight="700">6  Verify and package the species</text>
+<text x="47" y="887" fill="#445968" font-size="15">Ship graph/prefab assets + audio trio.</text>
+<text x="47" y="911" fill="#445968" font-size="15">Do not ship the generated registry pair.</text>
+<rect x="440" y="103" width="380" height="44" rx="9" fill="#285d9e"/><text x="458" y="131" fill="white" font-size="17" font-weight="700">END USER</text>
+<rect x="440" y="164" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="176" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="193" fill="#152b3c" font-size="17" font-weight="700">1  Set up the merge tools once</text>
+<text x="457" y="222" fill="#445968" font-size="15">Python 3.11+ and merge requirements.</text>
+<text x="457" y="246" fill="#445968" font-size="15">Configure compatible external Cobra.</text>
+<path d="M630,276 V294" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="297" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="309" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="326" fill="#152b3c" font-size="17" font-weight="700">2  Close JWE3 and install</text>
+<text x="457" y="355" fill="#445968" font-size="15">One root xinput1_4.dll + shared loader.</text>
+<text x="457" y="379" fill="#445968" font-size="15">Species files go under Win64/ovldata.</text>
+<path d="M630,409 V427" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="430" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="442" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="459" fill="#152b3c" font-size="17" font-weight="700">3  Check all three audio files</text>
+<text x="457" y="488" fill="#445968" font-size="15">Both banks + fragment in &lt;Mod&gt;/Audio.</text>
+<text x="457" y="512" fill="#445968" font-size="15">Use the finished author-provided assets.</text>
+<path d="M630,542 V560" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="563" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="575" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="592" fill="#152b3c" font-size="17" font-weight="700">4  Run a normal registry merge</text>
+<text x="457" y="621" fill="#445968" font-size="15">GUI: Merge registry, or merge BAT/CLI.</text>
+<text x="457" y="645" fill="#445968" font-size="15">Check-only does not install a new pair.</text>
+<path d="M630,675 V693" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="696" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="708" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="725" fill="#152b3c" font-size="17" font-weight="700">5  Require verified merge output</text>
+<text x="457" y="754" fill="#445968" font-size="15">VLAudioLoader/Audio/audiometadata.ovl</text>
+<text x="457" y="778" fill="#445968" font-size="15">+ audio_manifest.sha256</text>
+<path d="M630,808 V826" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="829" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="440" y="841" width="4" height="85" fill="#285d9e"/>
+<text x="457" y="858" fill="#152b3c" font-size="17" font-weight="700">6  Launch and listen in a park</text>
+<text x="457" y="887" fill="#445968" font-size="15">Check latest log, then creature actions.</text>
+<text x="457" y="911" fill="#445968" font-size="15">Re-merge after audio update/removal.</text>
+<rect x="850" y="103" width="380" height="44" rx="9" fill="#805329"/><text x="868" y="131" fill="white" font-size="17" font-weight="700">WHAT THE SYSTEM DOES</text>
+<rect x="850" y="164" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="176" width="4" height="85" fill="#805329"/>
+<text x="867" y="193" fill="#152b3c" font-size="17" font-weight="700">A  Merge reads installed inputs</text>
+<text x="867" y="222" fill="#445968" font-size="15">Stock registry + every mod fragment.</text>
+<text x="867" y="246" fill="#445968" font-size="15">Validate banks, IDs, and declarations.</text>
+<path d="M1040,276 V294" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="850" y="297" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="309" width="4" height="85" fill="#805329"/>
+<text x="867" y="326" fill="#152b3c" font-size="17" font-weight="700">B  Build and round-trip registry</text>
+<text x="867" y="355" fill="#445968" font-size="15">Verify registry records after extraction.</text>
+<text x="867" y="379" fill="#445968" font-size="15">Hash stock, merged output, and inputs.</text>
+<path d="M1040,409 V427" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="850" y="430" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="442" width="4" height="85" fill="#805329"/>
+<text x="867" y="459" fill="#152b3c" font-size="17" font-weight="700">C  Proxy starts with the game</text>
+<text x="867" y="488" fill="#445968" font-size="15">xinput1_4.dll beside JWE3.exe starts</text>
+<text x="867" y="512" fill="#445968" font-size="15">the shared automatic loading path.</text>
+<path d="M1040,542 V560" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="850" y="563" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="575" width="4" height="85" fill="#805329"/>
+<text x="867" y="592" fill="#152b3c" font-size="17" font-weight="700">D  Manifest freshness gate</text>
+<text x="867" y="621" fill="#445968" font-size="15">Valid → use merged registry/load banks.</text>
+<text x="867" y="645" fill="#445968" font-size="15">Stale → stock fallback; custom disabled.</text>
+<path d="M1040,675 V693" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="850" y="696" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="708" width="4" height="85" fill="#805329"/>
+<text x="867" y="725" fill="#152b3c" font-size="17" font-weight="700">E  Banks + registry + graph agree</text>
+<text x="867" y="754" fill="#445968" font-size="15">Media loads before event banks.</text>
+<text x="867" y="778" fill="#445968" font-size="15">Graph requests a registered owned event.</text>
+<path d="M1040,808 V826" stroke="#75848c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="850" y="829" width="380" height="109" rx="9" fill="white" stroke="#d6dfe5"/><rect x="850" y="841" width="4" height="85" fill="#805329"/>
+<text x="867" y="858" fill="#152b3c" font-size="17" font-weight="700">F  Creature action plays audio</text>
+<text x="867" y="887" fill="#445968" font-size="15">Event resolves to the new media IDs.</text>
+<text x="867" y="911" fill="#445968" font-size="15">Shared events retain their donor route.</text>
+<rect x="30" y="972" width="1200" height="124" rx="10" fill="#152b3c"/>
+<text x="52" y="1004" fill="#ffffff" font-size="18" font-weight="700">THE HANDOFF</text>
+<text x="52" y="1035" fill="#e1edf2" font-size="17">Author ships species assets + 2 banks + 1 fragment → User installs and merges → Game resolves creature events.</text>
+<text x="52" y="1065" fill="#e1edf2" font-size="17">Every bank/fragment change needs a new merge. A successful bank load alone does not prove audible playback.</text>
+</g></svg>
